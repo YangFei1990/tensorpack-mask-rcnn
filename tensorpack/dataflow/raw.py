@@ -9,7 +9,7 @@ from six.moves import range
 
 from .base import DataFlow, RNGDataFlow
 
-__all__ = ['FakeData', 'DataFromQueue', 'DataFromList', 'DataFromGenerator', 'DataFromIterable']
+__all__ = ['FakeData', 'DataFromQueue', 'DataFromList', 'BatchDataFromList', 'DataFromGenerator', 'DataFromIterable']
 
 
 class FakeData(RNGDataFlow):

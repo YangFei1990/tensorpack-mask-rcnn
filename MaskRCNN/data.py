@@ -9,7 +9,7 @@ from tabulate import tabulate
 from termcolor import colored
 
 from tensorpack.dataflow import (
-    DataFromList, MapDataComponent, MultiProcessMapDataZMQ, MultiThreadMapData, TestDataSpeed, imgaug, MapData)
+    BatchDataFromList, DataFromList, MapDataComponent, MultiProcessMapDataZMQ, MultiThreadMapData, TestDataSpeed, imgaug, MapData)
 from tensorpack.utils import logger
 from tensorpack.utils.argtools import log_once, memoized
 
