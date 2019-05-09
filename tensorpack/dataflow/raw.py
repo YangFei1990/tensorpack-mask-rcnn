@@ -121,7 +121,9 @@ class BatchDataFromList(RNGDataFlow):
             idxs = np.arange(len(self.lst))
             self.rng.shuffle(idxs)
             for k in range(0, len(self.lst), self.batch_size):
-                yield self.lst[idxs[k]:idxs[k+self.batch_size]]
+                output = []
+                for i in range(self.batch_size): output.append(self.lst[idxs[k+i]])
+                yield output
 
 class DataFromGenerator(DataFlow):
     """
