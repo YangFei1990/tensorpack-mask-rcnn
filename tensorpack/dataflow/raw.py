@@ -124,7 +124,7 @@ class BatchDataFromList(RNGDataFlow):
             while k < len(self.lst):
                 ret = []
                 for _ in range(self.batch_size):
-                    ret.append(self.lst[idx[k]])
+                    ret.append(self.lst[idxs[k]])
                     k += 1
                 yield ret
 
