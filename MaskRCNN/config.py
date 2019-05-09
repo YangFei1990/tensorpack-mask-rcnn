@@ -140,6 +140,7 @@ _C.PREPROC.MAX_SIZE = 1333
 _C.PREPROC.PIXEL_MEAN = [123.675, 116.28, 103.53]
 _C.PREPROC.PIXEL_STD = [58.395, 57.12, 57.375]
 _C.PREPROC.PREDEFINED_PADDING = True
+_C.PREPROC.BATCH_RANDOM = False
 _C.PREPROC.PADDING_SHAPES = [(800, 1000), (800, 1200), (800, 1350)]    # only add landscape shapes in decreasing h/w aspect ratio order - the corresponding portrait shape will be automatically created
 
 # anchors -------------------------
@@ -169,7 +170,7 @@ _C.RPN.TEST_PRE_NMS_TOPK = 6000
 _C.RPN.TEST_POST_NMS_TOPK = 1000   # if you encounter OOM in inference, set this to a smaller number
 # for FPN, #proposals per-level and #proposals after merging are (for now) the same
 # if FPN.PROPOSAL_MODE = 'Joint', these options have no effect
-_C.RPN.TRAIN_PER_LEVEL_NMS_TOPK = 2000 
+_C.RPN.TRAIN_PER_LEVEL_NMS_TOPK = 2000
 _C.RPN.TEST_PER_LEVEL_NMS_TOPK = 1000
 _C.RPN.TOPK_PER_IMAGE = True
 

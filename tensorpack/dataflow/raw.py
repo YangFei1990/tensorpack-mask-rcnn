@@ -94,6 +94,39 @@ class DataFromList(RNGDataFlow):
             for k in idxs:
                 yield self.lst[k]
 
+class BatchDataFromList(RNGDataFlow):
+    """ Wrap a list of datapoints to a DataFlow"""
+
+    def __init__(self, lst, batch_size, shuffle=True):
+        """
+        Args:
+            lst (list): input list. Each element is a datapoint.
+            shuffle (bool): shuffle data.
+        """
+        super(DataFromList, self).__init__()
+        self.lst = lst
+        self.shuffle = shuffle
+        self.batch_size = batch_size
+
+    def __len__(self):
+        return len(self.lst)
+
+    def __iter__(self):
+        if not self.shuffle:
+            k = 0
+            while k < len(self.lst):
+                yield self.lst[k:k+self.batch_size]
+                k += self.batch_size
+        else:
+            idxs = np.arange(len(self.lst))
+            self.rng.shuffle(idxs)
+            k = 0
+            while k < len(self.lst):
+                ret = []
+                for _ in range(self.batch_size):
+                    ret.append(self.lst[idx[k]])
+                    k += 1
+                yield ret
 
 class DataFromGenerator(DataFlow):
     """
