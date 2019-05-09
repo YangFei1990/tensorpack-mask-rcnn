@@ -103,7 +103,7 @@ class BatchDataFromList(RNGDataFlow):
             lst (list): input list. Each element is a datapoint.
             shuffle (bool): shuffle data.
         """
-        super(DataFromList, self).__init__()
+        super(BatchDataFromList, self).__init__()
         self.lst = lst
         self.shuffle = shuffle
         self.batch_size = batch_size
