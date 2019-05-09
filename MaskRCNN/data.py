@@ -504,7 +504,7 @@ def get_batch_train_dataflow(batch_size):
                 if not done:
                     batched_roidbs.append(batch)
     elif cfg.PREPROC.BATCH_RANDOM:
-        real_len = (len(batched_roidbs) // batch_size) * batch_size
+        real_len = (len(roidbs) // batch_size) * batch_size
         batched_roidbs = roidbs[:real_len]
     else:
         batch = []
