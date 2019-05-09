@@ -537,7 +537,10 @@ def get_batch_train_dataflow(batch_size):
 
     def preprocess(roidb_batch):
         datapoint_list = []
+        print("len: {}".format(len(roidb_batch)))
         for roidb in roidb_batch:
+            if not isinstance(roidb, dict): raise
+            print(roidb.keys())
             fname, boxes, klass, is_crowd = roidb['file_name'], roidb['boxes'], roidb['class'], roidb['is_crowd']
             # print(fname)
             boxes = np.copy(boxes)
