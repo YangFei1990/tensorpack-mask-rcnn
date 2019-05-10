@@ -433,14 +433,10 @@ class ResNetFPNModel(DetectionModel):
                     single_image_gt_count = prepadding_gt_counts[i] # 1-D Num_GT_boxes_current_image
                     single_image_gt_masks = gt_masks[i, :single_image_gt_count, :, :] # Num_GT_boxes_current_image x H_gtmask x W_gtmask (maybe? might have length 1 dim at beginning)
                     single_image_fg_indices = tf.squeeze(tf.where(tf.equal(proposal_fg_boxes[:, 0], i)), axis=1) # 1-D Num_fg_boxes_current_image
-                    single_image_proposal_fg_boxes = tf.gather(proposal_fg_boxes, single_image_fg_indices)
                     single_image_roi_feature_maskrcnn =  tf.gather(roi_feature_maskrcnn, single_image_fg_indices)
                     single_image_fg_boxes = tf.gather(proposal_fg_boxes, single_image_fg_indices)[:, 1:] # Num_fg_boxes_current_image x 4
                     single_image_fg_labels = tf.gather(proposal_fg_labels, single_image_fg_indices) # 1-D Num_fg_boxes_current_image
                     single_image_fg_inds_wrt_gt = proposal_gt_id_for_each_fg[i] # 1-D Num_fg_boxes_current_image
-                    single_image_feature = []
-                    for j in range(4):
-                        single_image_feature.append(tf.expand_dims(features[j][i,:], 0))
 
                     print(type(single_image_fg_inds_wrt_gt))
                     assert isinstance(single_image_fg_inds_wrt_gt, tf.Tensor)
