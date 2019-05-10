@@ -66,7 +66,7 @@ class DetectionModel(ModelDesc):
         proposal_boxes, rpn_losses = self.rpn(image, features, anchor_inputs, inputs['orig_image_dims'])  # inputs?
 
         targets = [inputs[k] for k in ['gt_boxes', 'gt_labels', 'gt_masks'] if k in inputs]
-        
+
         head_losses = None
         if cfg.TRAIN.PER_IMAGE_ROI_HEAD: head_losses = self.roi_heads_per_image(image, features, proposal_boxes, targets, inputs)
         else: head_losses = self.roi_heads(image, features, proposal_boxes, targets, inputs)
@@ -439,7 +439,7 @@ class ResNetFPNModel(DetectionModel):
                     single_image_fg_inds_wrt_gt = proposal_gt_id_for_each_fg[i] # 1-D Num_fg_boxes_current_image
                     single_image_feature = []
                     for j in range(4):
-                        single_image_feature.append(tf.gather(features[j], i))
+                        single_image_feature.append(tf.expand_dims(features[j][i,:], 0))
 
                     print(type(single_image_fg_inds_wrt_gt))
                     assert isinstance(single_image_fg_inds_wrt_gt, tf.Tensor)
@@ -449,7 +449,7 @@ class ResNetFPNModel(DetectionModel):
                             name_scope='multilevel_roi_align_mask_{}'.format(i))
 
                     single_image_mask_logits = maskrcnn_head_func(
-                            'maskrcnn_{}'.format(i), single_image_roi_feature_maskrcnn, cfg.DATA.NUM_CATEGORY, fp16=self.fp16)
+                            'maskrcnn', single_image_roi_feature_maskrcnn, cfg.DATA.NUM_CATEGORY, fp16=self.fp16)
 
                     single_image_gt_masks = tf.expand_dims(single_image_gt_masks, axis=1) # Num_GT_boxes_current_image x 1 x H_gtmask x W_gtmask
                     # single_image_target_masks_for_fg: Num_fg_boxes_current_image x 1 x (H_roi_mask*2) x (W_roi_mask*2)
