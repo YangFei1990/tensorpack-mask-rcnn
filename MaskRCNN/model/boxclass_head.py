@@ -395,7 +395,6 @@ class BoxClassHead(object):
         avg_label_loss = tf.truediv(tf.add_n(all_loss_label), tf.cast(batch_size_per_gpu, dtype=tf.float32), name='avg_label_loss')
         avg_box_loss = tf.truediv(tf.add_n(all_loss_box), tf.cast(batch_size_per_gpu, dtype=tf.float32), name='avg_box_loss')
         return [avg_label_loss, avg_box_loss]
-        )
 
 
     @memoized_method
