@@ -67,7 +67,6 @@ def fpn_model(features, fp16=False):
 
         if fp16:
             return [tf.cast(l, tf.float32) for l in p2345] + [tf.cast(p6, tf.float32)]
-
         return p2345 + [p6]
 
 @under_name_scope()

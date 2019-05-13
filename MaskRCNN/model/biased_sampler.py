@@ -9,34 +9,35 @@ from utils.box_ops import pairwise_iou_batch
 @under_name_scope()
 def sample_fast_rcnn_targets(boxes, gt_boxes, gt_labels, orig_gt_counts, batch_size):
     """
-    Sample some boxes from all proposals for training.
+    Sample boxes according to the predifined fg(foreground) boxes and bg(background) boxes ratio
     #fg(foreground) is guaranteed to be > 0, because ground truth boxes will be added as proposals.
     Args:
-        boxes: (#lvl x BS x K) x 5 region proposals. [batch_index, floatbox] aka Nx5
-        gt_boxes: BS x MaxGT x 4, floatbox
+        boxes: K x 5 region proposals. [batch_index, floatbox]
+        gt_boxes: Groundtruth boxes, BS x MaxGT x 4, floatbox
         gt_labels: BS x MaxGT, int32
-        orig_gt_counts: BS   # The number of ground truths in the data. Use to unpad gt_labels and gt_boxes
+        orig_gt_counts: BS # The number of ground truths in the data. Use to unpad gt_labels and gt_boxes
     Returns:
         sampled_boxes: tx5 floatbox, the rois
         sampled_labels: t int64 labels, in [0, #class). Positive means foreground.
-        fg_inds_wrt_gt: #fg indices, each in range [0, m-1].
-            It contains the matching GT of each foreground roi.
+        fg_inds_wrt_gt: #fg indices, each in range [0, m-1]. It contains the matching GT of each foreground roi.
     """
 
-    per_image_ious = pairwise_iou_batch(boxes, gt_boxes, orig_gt_counts, batch_size=batch_size) # list of len BS [N x M]
+    # Computes pairwise intersection-over-union between rpn boxes and gt boxes
+    # per_image_ious: list of len BS [N x M] -- N is Num_rpn_boxes and M is Num_gt_boxes, for one image
+    per_image_ious = pairwise_iou_batch(boxes, gt_boxes, orig_gt_counts, batch_size=batch_size)
 
     proposal_metrics_batch(per_image_ious)
 
 
-    ious = []
-    best_iou_inds = []
+    ious = [] # list of len BS [(N+M) x M]
+    best_iou_inds = [] # list of len BS [1 x M]
     for i in range(batch_size):
         image_ious = per_image_ious[i]
         gt_count = orig_gt_counts[i]
 
         single_image_gt_boxes = gt_boxes[i, :gt_count, :]
 
-        single_image_gt_boxes = tf.pad(single_image_gt_boxes, [[0,0], [1,0]], mode="CONSTANT", constant_values=i)
+        single_image_gt_boxes = tf.pad(single_image_gt_boxes, [[0,0], [1,0]], mode="CONSTANT", constant_values=i) # M x 5
         boxes = tf.concat([boxes, single_image_gt_boxes], axis=0)
 
         iou = tf.concat([image_ious, tf.eye(gt_count)], axis=0)  # (N+M) x M
@@ -134,7 +135,8 @@ def proposal_metrics_batch(per_image_ious):
     """
     Add summaries for RPN proposals.
     Args:
-        per_image_ios: list of len batch_size: nxm, #proposal x #gt
+        per_image_ios: pairwise intersection-over-union between rpn boxes and gt boxes
+                       list of len BS [Num_rpn_boxes x Num_gt_boxes]
     """
     prefix="proposal_metrics_batch"
 
