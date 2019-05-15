@@ -642,7 +642,9 @@ def get_batch_train_dataflow(batch_size):
             padding_shapes = [get_padding_shape(*(d["images"].shape[:2])) for d in datapoint_list]
             max_height = max([shp[0] for shp in padding_shapes])
             max_width = max([shp[1] for shp in padding_shapes])
-
+        elif cfg.PREPROC.PADDING_ALL:
+            max_height = cfg.PREPROC.MAX_SIZE
+            max_width = cfg.PREPROC.MAX_SIZE
         else:
             image_dims = [d["images"].shape for d in datapoint_list]
             heights = [dim[0] for dim in image_dims]
